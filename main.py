@@ -141,7 +141,7 @@ async def modifyPendingOrder(copyOrder, mainOrder, multiplier):
           "sl": copy.sl,
           "tp": copy.tp,
           "magic": 190196,
-          "position": main.ticket,
+          "order": main.ticket,
           "comment": str(copy.ticket),
           "type_time": copy.type_time,
           "type_filling": copy.type_filling,
