@@ -18,6 +18,8 @@ MAIN_SERVER = os.getenv('MAIN_SERVER')
 MAIN_LOGIN = os.getenv('MAIN_LOGIN')
 MAIN_PASSWORD = os.getenv('MAIN_PASSWORD')
 
+MULTIPLIER = os.getenv('MULTIPLIER')
+
 if not mt2.initialize(path=COPY_PATH,login=int(COPY_LOGIN), server=COPY_SERVER,password=COPY_PASSWORD):
       print("initialize() failed, error code =",mt5.last_error())  
 
@@ -25,7 +27,7 @@ if not mt5.initialize(path=MAIN_PATH,login=int(MAIN_LOGIN), server=MAIN_SERVER,p
       print("initialize() failed, error code =",mt2.last_error())
 
 def generateLot(copyLot, multiplier):
-  lot = copyLot * multiplier * 3.5
+  lot = copyLot * multiplier * float(MULTIPLIER)
   if lot < 0.01:
     lot = 0.01
   return float(int(100*lot))/100
