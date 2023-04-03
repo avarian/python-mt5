@@ -69,10 +69,10 @@ async def closeOrder(copyOrder, mainOrder):
         break
     if main.comment != "" and isThere == False:
       price = main.price_current
-      if main.type == mt5.ORDER_TYPE_BUY:
-        price = mt5.symbol_info_tick(main.symbol).ask
-      elif main.type == mt5.ORDER_TYPE_SELL:
-        price = mt5.symbol_info_tick(main.symbol).bid
+      # if main.type == mt5.ORDER_TYPE_BUY:
+      #   price = mt5.symbol_info_tick(main.symbol).ask
+      # elif main.type == mt5.ORDER_TYPE_SELL:
+      #   price = mt5.symbol_info_tick(main.symbol).bid
       
       request = {
         "action": mt5.TRADE_ACTION_DEAL,
@@ -103,33 +103,35 @@ async def dealOrder(copyOrder, mainOrder, multiplier):
     if isThere == False:
       lot = generateLot(copy.volume, multiplier)
       price = copy.price_current
-      if copy.type == mt5.ORDER_TYPE_BUY:
-        price = mt5.symbol_info_tick(copy.symbol).ask
-      elif copy.type == mt5.ORDER_TYPE_SELL:
-        price = mt5.symbol_info_tick(copy.symbol).bid
+      # if copy.type == mt5.ORDER_TYPE_BUY:
+      #   price = mt5.symbol_info_tick(copy.symbol).ask
+      # elif copy.type == mt5.ORDER_TYPE_SELL:
+      #   price = mt5.symbol_info_tick(copy.symbol).bid
 
+      dealOrder = False
       if copy.type == mt5.ORDER_TYPE_BUY and copy.price_open < price:
-        break
+        dealOrder = True
       if copy.type == mt5.ORDER_TYPE_SELL and copy.price_open > price:
-        break
+        dealOrder = True
       
-      request = {
-        "action": mt5.TRADE_ACTION_DEAL,
-        "symbol": copy.symbol,
-        "volume": lot,
-        "type": copy.type,
-        "price": price,
-        "sl": copy.sl,
-        "tp": copy.tp,
-        "deviation": 20,
-        "magic": 190196,
-        "comment": str(copy.ticket),
-      }
-      result = mt5.order_send(request)
-      if result.retcode != mt5.TRADE_RETCODE_DONE:
-        print("{} dealOrder order_send failed, retcode={}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), result.retcode))
-      else:
-        print("{} dealOrder order_send(): for {} {} lot at {}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), copy.symbol, lot, price))
+      if dealOrder == True:
+        request = {
+          "action": mt5.TRADE_ACTION_DEAL,
+          "symbol": copy.symbol,
+          "volume": lot,
+          "type": copy.type,
+          "price": price,
+          "sl": copy.sl,
+          "tp": copy.tp,
+          "deviation": 20,
+          "magic": 190196,
+          "comment": str(copy.ticket),
+        }
+        result = mt5.order_send(request)
+        if result.retcode != mt5.TRADE_RETCODE_DONE:
+          print("{} dealOrder order_send failed, retcode={}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), result.retcode))
+        else:
+          print("{} dealOrder order_send(): for {} {} lot at {}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), copy.symbol, lot, price))
 
 async def modifyPendingOrder(copyOrder, mainOrder, multiplier):
   for copy in copyOrder:
