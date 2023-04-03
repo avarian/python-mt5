@@ -109,9 +109,9 @@ async def dealOrder(copyOrder, mainOrder, multiplier):
       #   price = mt5.symbol_info_tick(copy.symbol).bid
 
       dealOrder = False
-      if copy.type == mt5.ORDER_TYPE_BUY and copy.price_open < price:
+      if copy.type == mt5.ORDER_TYPE_BUY and copy.price_open > price:
         dealOrder = True
-      if copy.type == mt5.ORDER_TYPE_SELL and copy.price_open > price:
+      if copy.type == mt5.ORDER_TYPE_SELL and copy.price_open < price:
         dealOrder = True
       
       if dealOrder == True:
